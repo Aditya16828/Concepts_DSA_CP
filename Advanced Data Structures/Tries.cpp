@@ -73,11 +73,10 @@ public:
 			if (temp->child[ch]) {
 				temp = temp->child[ch];
 			} else {
-				if (temp->isEnd) {
-					return true;
-				} else return false;
+				return false;
 			}
 		}
+		return temp->isEnd;
 	}
 };
 
