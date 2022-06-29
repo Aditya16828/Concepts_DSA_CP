@@ -43,6 +43,7 @@ struct Node {
 
 class Trie {
 	Node* root;
+	std::vector<std::string> res;
 public:
 	Trie() {
 		this->root = new Node('\0');
@@ -78,6 +79,70 @@ public:
 		}
 		return temp->isEnd;
 	}
+
+	void dfs(Node* node, std::string& pre, std::string out) {
+		if (node == NULL) return;
+		if (node->isEnd) {
+			res.push_back(pre + out);
+		}
+		iter_all(c, node->child) {
+			dfs(c.second, pre,  out + c.first);
+		}
+	}
+
+	void print_prefix(std::string pre) {
+		Node* temp = root;
+		int n = pre.size();
+		loop(i, 0, n - 1) {
+			char ch = pre[i];
+			if (temp->child.count(ch)) {
+				temp = temp->child[ch];
+			} else {
+				return;
+			}
+		}
+		dfs(temp, pre, "");
+		iter_all(el, res) {
+			std::cout << el << ", ";
+		}
+		std::cout << "\n";
+	}
+
+	bool dfs_delete(Node* node, int i, std::string &s) {
+		if (node == NULL) return true;
+
+		if (i == s.size() - 1) {
+			if (node->isEnd) {
+				if (node->child.size() == 0) {
+					delete node;
+					return true;
+				} else {
+					node->isEnd = false;
+					return false;
+				}
+			} else return false;
+		}
+
+		bool todelete = false;
+
+		if (node->child.count(s[i + 1])) {
+			todelete = dfs_delete(node->child[s[i + 1]], i + 1, s);
+			if (todelete) node->child.erase(s[i + 1]);
+		}
+		if (node->child.size() == 0) {
+			delete node;
+			return true;
+		}
+		return false;
+	}
+
+	void delete_str(std::string s) {
+		if (not this->search(s)) {std::cout << "Not present\n"; return;}
+		int n = s.size();
+		Node* temp = root;
+		dfs_delete(temp->child[s[0]], 0, s);
+		std::cout << "Deleted\n";
+	}
 };
 
 int main(int argc, char const *argv[]) {
@@ -85,7 +150,36 @@ int main(int argc, char const *argv[]) {
 	file_i_o();
 	// Write your code here....
 
+	int t;
+	std::cin >> t;
+	Trie tr;
+	while (t--) {
+		std::string s;
+		std::cin >> s;
+		tr.insert(s);
+	}
 
+	// int q;
+	// std::cin >> q;
+	// while (q--) {
+	// 	std::string str;
+	// 	std::cin >> str;
+	// 	std::cout << (tr.search(str) ? "Found" : "Not Found") << "\n";
+	// }
+
+	// std::string prefix;
+	// std::cin >> prefix;
+	// tr.print_prefix(prefix);
+
+	std::string str;
+	std::cin >> str;
+	tr.delete_str(str);
+
+	std::cout << (tr.search(str) ? "Found" : "Not Found") << "\n";
+
+	std::string prefix;
+	std::cin >> prefix;
+	tr.print_prefix(prefix);
 
 #ifndef ONLINE_JUDGE
 	clock_t end = clock();
