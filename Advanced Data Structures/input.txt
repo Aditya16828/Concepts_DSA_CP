@@ -1,5 +1,2 @@
 4
-zebra
-dog
-duck
-dove
+1 2 3 4
