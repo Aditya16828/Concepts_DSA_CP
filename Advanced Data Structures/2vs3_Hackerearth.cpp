@@ -32,10 +32,16 @@ void file_i_o() {
 #endif
 }
 
-void build(vec<pllll> &seg, vec<char> &arr, int start, int end, int tidx) {
+ll p[100005];
+
+struct Node {
+	ll length, value;
+};
+
+void build(vec<Node*> &seg, vec<char> &arr, int start, int end, int tidx) {
 	if (start == end) {
-		seg[tidx].first = 1;
-		seg[tidx].second = arr[start] - '0';
+		seg[tidx]->length = 1;
+		seg[tidx]->value = arr[start] - '0';
 		return;
 	}
 
@@ -44,14 +50,17 @@ void build(vec<pllll> &seg, vec<char> &arr, int start, int end, int tidx) {
 	build(seg, arr, start, mid, 2 * tidx + 1);
 	build(seg, arr, mid + 1, end, 2 * tidx + 2);
 
-	seg[tidx].first = seg[2 * tidx + 1].first + seg[2 * tidx + 2].first;
-	seg[tidx].second = ((((ll)pow(2, seg[2 * tidx + 2].first) % 3) * seg[2 * tidx + 1].second ) % 3) + (seg[2 * tidx + 2].second % 3);
-	seg[tidx].second %= 3;
+	seg[tidx]->length = seg[2 * tidx + 1]->length + seg[2 * tidx + 2]->length;
+	seg[tidx]->value = (p[seg[2 * tidx + 2]->length] * seg[2 * tidx + 1]->value) + seg[2 * tidx + 2]->value;
+	seg[tidx]->value %= 3;
 }
 
-pii query(vec<pllll> &seg, vec<char> &arr, int start, int end, int tidx, int l, int r) {
+Node* query(vec<Node*> &seg, vec<char> &arr, int start, int end, int tidx, int l, int r) {
+	Node* temp = new Node();
+	temp->length = 0;
+	temp->value = 0;
 	if (r < start or end < l) {
-		return {0, 0};
+		return temp;
 	}
 	if (start >= l and end <= r) {
 		return seg[tidx];
@@ -59,19 +68,20 @@ pii query(vec<pllll> &seg, vec<char> &arr, int start, int end, int tidx, int l, 
 
 	int mid = start + (end - start) / 2;
 
-	pii lst = query(seg, arr, start, mid, 2 * tidx + 1, l, r);
-	pii rst = query(seg, arr, mid + 1, end, 2 * tidx + 2, l, r);
+	Node* lst = query(seg, arr, start, mid, 2 * tidx + 1, l, r);
+	Node* rst = query(seg, arr, mid + 1, end, 2 * tidx + 2, l, r);
 
-	pllll temp = {0, 0};
-	temp.first = lst.first + rst.first;
-	temp.second = ((((ll)pow(2, rst.first) % 3) * lst.second) % 3) + (rst.second % 3);
+	temp->length = lst->length + rst->length;
+	temp->value = (p[rst->length] * lst->value) + rst->value;
+	temp->value %= 3;
+
 	return temp;
 }
 
-void update(vec<pllll> &seg, vec<char> &arr, int start, int end, int tidx, int i) {
+void update(vec<Node*> &seg, vec<char> &arr, int start, int end, int tidx, int i) {
 	if (start == end) {
-		seg[tidx].first = 1;
-		seg[tidx].second = arr[i] - '0';
+		seg[tidx]->length = 1;
+		seg[tidx]->value = arr[i] - '0';
 		return;
 	}
 
@@ -83,15 +93,20 @@ void update(vec<pllll> &seg, vec<char> &arr, int start, int end, int tidx, int i
 		update(seg, arr, start, mid, 2 * tidx + 1, i);
 	}
 
-	seg[tidx].first = seg[2 * tidx + 1].first + seg[2 * tidx + 2].first;
-	seg[tidx].second = ((((ll)pow(2, seg[2 * tidx + 2].first) % 3) * seg[2 * tidx + 1].second) % 3) + (seg[2 * tidx + 2].second % 3);
-	seg[tidx].second %= 3;
+	seg[tidx]->length = seg[2 * tidx + 1]->length + seg[2 * tidx + 2]->length;
+	seg[tidx]->value = (p[seg[2 * tidx + 2]->length] * seg[2 * tidx + 1]->value) + seg[2 * tidx + 2]->value;
+	seg[tidx]->value %= 3;
 }
 
 int main(int argc, char const *argv[]) {
 	clock_t begin = clock();
 	file_i_o();
 	// Write your code here....
+
+	p[0] = 1;
+	for (int i = 1; i < 100005; i++) {
+		p[i] = (p[i - 1] * 2) % 3;
+	}
 
 	int n;
 	std::cin >> n;
@@ -101,7 +116,8 @@ int main(int argc, char const *argv[]) {
 	std::vector<char> str(bin.begin(), bin.end());
 	// for (auto &i : str) std::cout << i;
 	// std::cout << "\n";
-	std::vector<pllll> seg(4 * n, std::pair<int, int>(0, 0));
+	std::vector<Node*> seg(4 * n);
+	for (int i = 0; i < 4 * n; i++) seg[i] = new Node();
 	build(seg, str, 0, n - 1, 0);
 	// for (auto &i : seg) std::cout << "{" << i.first << ", " << i.second << "}; ";
 
@@ -114,8 +130,8 @@ int main(int argc, char const *argv[]) {
 			// query
 			int l, r;
 			std::cin >> l >> r;
-			pii ans = query(seg, str, 0, n - 1, 0, l, r);
-			std::cout << (ans.second % 3) << "\n";
+			Node* ans = query(seg, str, 0, n - 1, 0, l, r);
+			std::cout << (ans->value % 3) << "\n";
 		} else {
 			// update
 			int idx;
