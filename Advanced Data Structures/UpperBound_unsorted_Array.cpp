@@ -1,7 +1,3 @@
-/*
-You are given an integer array, we define a term inversion pair: a[i] > a[j] and i < j.
-Find the inversion count for each element of the array.
-*/
 #include <bits/stdc++.h>
 #define ll long long int
 #define mod 1000000007
@@ -36,16 +32,17 @@ void file_i_o() {
 }
 
 void build(vi &seg, vi &arr, int start, int end, int tidx) {
-	if (start == end) {
+	if (start ==  end) {
 		seg[tidx] = arr[start];
 		return;
 	}
+
 	int mid = start + (end - start) / 2;
 
 	build(seg, arr, start, mid, 2 * tidx + 1);
 	build(seg, arr, mid + 1, end, 2 * tidx + 2);
 
-	seg[tidx] = seg[2 * tidx + 1] + seg[2 * tidx + 2];
+	seg[tidx] = std::max(seg[2 * tidx + 1], seg[2 * tidx + 2]);
 }
 
 void update(vi &seg, vi &arr, int start, int end, int tidx, int i) {
@@ -62,24 +59,24 @@ void update(vi &seg, vi &arr, int start, int end, int tidx, int i) {
 		update(seg, arr, start, mid, 2 * tidx + 1, i);
 	}
 
-	seg[tidx] = seg[2 * tidx + 1] + seg[2 * tidx + 2];
+	seg[tidx] = std::max(seg[2 * tidx + 1], seg[2 * tidx + 2]);
 }
 
-int query(vi &seg, int start, int end, int tidx, int l, int r) {
-	if (start > r or end < l) {
-		return 0;
+int query(vi &seg, vi &arr, int start, int end, int tidx, int l, int r, int x) {
+	if (end < l or start > r) {
+		return INT_MAX;
 	}
-
-	if (start >= l and end <= r) {
-		return seg[tidx];
+	if (start == end) {
+		if (seg[tidx] < x) return INT_MAX;
+		else return seg[tidx];
 	}
 
 	int mid = start + (end - start) / 2;
 
-	int lst = query(seg, start, mid, 2 * tidx + 1, l, r);
-	int rst = query(seg, mid + 1, end, 2 * tidx + 2, l, r);
+	int lst = query(seg, arr, start, mid, 2 * tidx + 1, l, r, x);
+	int rst = query(seg, arr, mid + 1, end, 2 * tidx + 2, l, r, x);
 
-	return (lst + rst);
+	return std::min(lst, rst);
 }
 
 int main(int argc, char const *argv[]) {
@@ -90,32 +87,29 @@ int main(int argc, char const *argv[]) {
 	int n;
 	std::cin >> n;
 	vi arr(n);
-	int grt = INT_MIN, low = INT_MAX;
-	loop(i, 0, n - 1) {
-		std::cin >> arr[i];
-		grt = std::max(grt, arr[i]);
-		low = std::min(low, arr[i]);
+	loop(i, 0, n - 1) std::cin >> arr[i];
+
+	vi seg(4 * n, INT_MIN);
+	build(seg, arr, 0, n - 1, 0);
+
+	int q;
+	std::cin >> q;
+	while (q--) {
+		int type;
+		std::cin >> type;
+		if (type == 1) {
+			int i, val;
+			std::cin >> i >> val;
+			arr[i] = val;
+			update(seg, arr, 0, n - 1, 0, i);
+		}
+		if (type == 2) {
+			int l, r, x;
+			std::cin >> l >> r >> x;
+			int ans = query(seg, arr, 0, n - 1, 0, l, r, x);
+			std::cout << ans << "\n";
+		}
 	}
-
-	vi vis(grt + 1, 0);
-
-	vi seg(4 * (grt + 1), 0);
-	build(seg, vis, 0, vis.size() - 1, 0);
-
-	vi ans(n, 0);
-
-	for (int i = 0; i < n; i++) {
-		vis[arr[i]] = 1;
-		update(seg, vis, 0, vis.size() - 1, 0, arr[i]);
-		ans[i] = query(seg, 0, vis.size() - 1, 0, arr[i] + 1, vis.size() - 1);
-	}
-	// logarr(vis, 0, vis.size() - 1);
-	// logarr(seg, 0, seg.size() - 1);
-
-	for (int i = 0; i < n; i++) {
-		std::cout << "Inversion Count of " << arr[i] << " is " << ans[i] << "\n";
-	}
-
 
 #ifndef ONLINE_JUDGE
 	clock_t end = clock();

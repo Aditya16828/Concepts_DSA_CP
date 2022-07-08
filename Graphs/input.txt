@@ -1,4 +1,4 @@
 3 3
-R R D
-D L L
-R U D
+R R L
+D R U
+D U R
