@@ -1,9 +1,12 @@
 /*
-You have an array of all zeroes initially of length n.
-You need to perform Q queries on the array of 3 types:
-	1 x -> update arr[x] to 2*arr[x] + 1
-	2 x -> update arr[x] to arr[x]/2
-	x y -> for all i in [x, y] take all arr[i] and convert them into binary strings. Now concatenate all the strings and return the number of setbits.
+Given an array of binary values {0, 1};
+You need to support 2 different types of queries:
+1. set(i, v) -> arr[i] = v;
+2. find(k) -> returns the index of kth one.
+
+Approach:
+	Store the number of ones [start, end] in the nodes. If number of ones in lst >= k then go to lst;
+	otherwise go to rst with k-val[lst] number of ones.
 */
 #include <bits/stdc++.h>
 #define ll long long int
@@ -38,6 +41,21 @@ void file_i_o() {
 #endif
 }
 
+void build(vi &seg, vi &arr, int start, int end, int tidx) {
+	if (start == end) {
+		if (arr[start]) seg[tidx] = 1;
+		else seg[tidx] = 0;
+		return;
+	}
+
+	int mid = start + (end - start) / 2;
+
+	build(seg, arr, start, mid, 2 * tidx + 1);
+	build(seg, arr, mid + 1, end, 2 * tidx + 2);
+
+	seg[tidx] = seg[2 * tidx + 1] + seg[2 * tidx + 2];
+}
+
 void update(vi &seg, vi &arr, int start, int end, int tidx, int i) {
 	if (start == end) {
 		seg[tidx] = arr[i];
@@ -46,25 +64,24 @@ void update(vi &seg, vi &arr, int start, int end, int tidx, int i) {
 
 	int mid = start + (end - start) / 2;
 
-	if (i > mid) {
-		update(seg, arr, mid + 1, end, 2 * tidx + 2, i);
-	} else {
-		update(seg, arr, start, mid, 2 * tidx + 1, i);
-	}
+	if (i > mid) update(seg, arr, mid + 1, end, 2 * tidx + 2, i);
+	else update(seg, arr, start, mid, 2 * tidx + 1, i);
 
 	seg[tidx] = seg[2 * tidx + 1] + seg[2 * tidx + 2];
 }
 
-int query(vi &seg, vi &arr, int start, int end, int tidx, int l, int r) {
-	if (end < l or start > r) return 0;
-	if (start >= l and r >= end) return seg[tidx];
+int query(vi &seg, vi &arr, int start, int end, int tidx, int k) {
+	if (seg[tidx] < k) return -1;
+
+	if (start == end) return start;
 
 	int mid = start + (end - start) / 2;
 
-	int lst = query(seg, arr, start, mid, 2 * tidx + 1, l , r);
-	int rst = query(seg, arr, mid + 1, end, 2 * tidx + 2, l, r);
-
-	return (lst + rst);
+	if (seg[2 * tidx + 1] >= k) {
+		return query(seg, arr, start, mid, 2 * tidx + 1, k);
+	} else {
+		return query(seg, arr, mid + 1, end, 2 * tidx + 2, k - seg[2 * tidx + 1]);
+	}
 }
 
 int main(int argc, char const *argv[]) {
@@ -74,9 +91,15 @@ int main(int argc, char const *argv[]) {
 
 	int n;
 	std::cin >> n;
-	std::vector<int> arr(n, 0);
+	vi arr(n);
+	loop(i, 0, n - 1) {
+		std::cin >> arr[i];
+	}
 
-	std::vector<int> seg(4 * n, 0);
+	vi seg(4 * n, -1);
+	build(seg, arr, 0, n - 1, 0);
+	// iter_all(el, seg) std::cout << el << ", ";
+	// std::cout << "\n";
 
 	int q;
 	std::cin >> q;
@@ -84,21 +107,14 @@ int main(int argc, char const *argv[]) {
 		int type;
 		std::cin >> type;
 		if (type == 1) {
-			int x;
-			std::cin >> x;
-			arr[x]++;
-			update(seg, arr, 0, n - 1, 0, x);
-		}
-		if (type == 2) {
-			int x;
-			std::cin >> x;
-			if (arr[x] > 0) arr[x]--;
-			update(seg, arr, 0, n - 1, 0, x);
-		}
-		if (type == 3) {
-			int x, y;
-			std::cin >> x >> y;
-			std::cout << query(seg, arr, 0, n - 1, 0, x, y) << "\n";
+			int i, v;
+			std::cin >> i >> v;
+			arr[i] = v;
+			update(seg, arr, 0, n - 1, 0, i);
+		} else {
+			int k;
+			std::cin >> k;
+			std::cout << query(seg, arr, 0, n - 1, 0, k) << "\n";
 		}
 	}
 
