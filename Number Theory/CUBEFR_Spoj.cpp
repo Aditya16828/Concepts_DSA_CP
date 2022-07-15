@@ -5,7 +5,10 @@
 #define inf (long long int)1e18
 #define log(args...)    { std::string _s = #args; replace(_s.begin(), _s.end(), ',', ' '); std::stringstream _ss(_s); std::istream_iterator<std::string> _it(_ss); err(_it, args); }
 #define logarr(arr,a,b) for(int z=(a);z<=(b);z++) std::cout<<(arr[z])<<" ";std::cout<<std::endl;
+<<<<<<< HEAD
 #define vec std::vector
+=======
+>>>>>>> bcd784818f924343fe1aaaa77102fa5ecf849828
 #define vll std::vector<long long int>
 #define vi std::vector<int>
 #define vb std::vector<bool>
@@ -32,6 +35,7 @@ void file_i_o() {
 #endif
 }
 
+<<<<<<< HEAD
 const int max_size = 1000005;
 std::bitset<max_size> isCubefree;
 std::map<int, int> ans;
@@ -52,6 +56,22 @@ void gen_cbfree() {
 		} else {
 			ans[i] = -1;
 		}
+=======
+std::map<ll, ll> ans;
+std::bitset<1000005> iscbfree;
+void gen_set() {
+	iscbfree.set();
+	iscbfree[0] = 0;
+	for (int i = 2; i * i * i <= 1000001; i++) {
+		for (ll j = 1; j * (i * i * i) <= 1000001; j++) {
+			iscbfree[i * i * i * j] = 0;
+		}
+	}
+	ll pos = 1;
+	loop(i, 1, 1000001) {
+		if (iscbfree[i]) {ans[i] = pos; ++pos;}
+		else ans[i] = -1;
+>>>>>>> bcd784818f924343fe1aaaa77102fa5ecf849828
 	}
 }
 
@@ -60,14 +80,23 @@ int main(int argc, char const *argv[]) {
 	file_i_o();
 	// Write your code here....
 
+<<<<<<< HEAD
 	gen_cbfree();
+=======
+	gen_set();
+>>>>>>> bcd784818f924343fe1aaaa77102fa5ecf849828
 	int t;
 	std::cin >> t;
 	loop(i, 1, t) {
 		int n;
 		std::cin >> n;
+<<<<<<< HEAD
 		if (ans[n] != -1) std::cout << "Case " << i << ": " << ans[n] << "\n";
 		else std::cout << "Case " << i << ": Not Cube Free\n";
+=======
+		if (ans[n] > -1) std::cout << "Case " << i << ": " << ans[n] << "\n";
+		else std::cout << "Case " << i << ": Not Cube Free" << "\n";
+>>>>>>> bcd784818f924343fe1aaaa77102fa5ecf849828
 	}
 
 #ifndef ONLINE_JUDGE
@@ -75,4 +104,8 @@ int main(int argc, char const *argv[]) {
 	std::cout << "\n\nExecuted In: " << double(end - begin) / CLOCKS_PER_SEC * 1000 << " ms";
 #endif
 	return 0;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bcd784818f924343fe1aaaa77102fa5ecf849828

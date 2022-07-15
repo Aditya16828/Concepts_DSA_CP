@@ -1,10 +1,10 @@
+// https://www.spoj.com/problems/NFACTOR/
 #include <bits/stdc++.h>
 #define ll long long int
 #define mod 1000000007
 #define inf (long long int)1e18
 #define log(args...)    { std::string _s = #args; replace(_s.begin(), _s.end(), ',', ' '); std::stringstream _ss(_s); std::istream_iterator<std::string> _it(_ss); err(_it, args); }
 #define logarr(arr,a,b) for(int z=(a);z<=(b);z++) std::cout<<(arr[z])<<" ";std::cout<<std::endl;
-#define vec std::vector
 #define vll std::vector<long long int>
 #define vi std::vector<int>
 #define vb std::vector<bool>
@@ -31,93 +31,43 @@ void file_i_o() {
 #endif
 }
 
-class Max_Heap {
-	std::vector<int> heap;
-
-	void upheapify(int idx) {
-		if (idx == 0) return;
-
-		int p_idx = (idx - 1) / 2;
-
-		if (heap[p_idx] > heap[idx]) return;
-		else {
-			std::swap(heap[p_idx], heap[idx]);
-			upheapify(p_idx);
-			return;
+vll factors((int)(1e6 + 2), 0);
+void gen_factors() {
+	for (int i = 2; i <= (int)(1e6); i++) {
+		if (factors[i] == 0) {
+			for (int j = i; j <= (int)(1e6); j += i) {
+				factors[j]++;
+			}
 		}
 	}
+}
 
-	void downheapify(int idx) {
-		int lc_idx = 2 * idx + 1;
-		int rc_idx = 2 * idx + 2;
 
-		if (lc_idx >= heap.size() and rc_idx >= heap.size()) return;
-
-		int max_idx = idx;
-
-		if (lc_idx < heap.size() and heap[lc_idx] > heap[max_idx]) max_idx = lc_idx;
-		if (rc_idx < heap.size() and heap[rc_idx] > heap[max_idx]) max_idx = rc_idx;
-
-		if (max_idx == idx) return;
-		else {
-			std::swap(heap[max_idx], heap[idx]);
-			downheapify(max_idx);
-			return;
+ll ans[11][(int)(1e6 + 2)];
+void gen_ans() {
+	gen_factors();
+	std::memset(ans, 0, sizeof ans);
+	for (int i = 0; i <= 10; i++) {
+		for (int j = 1; j <= (int)(1e6); j++) {
+			if (factors[j] == i) {ans[i][j] = ans[i][j - 1] + 1;}
+			else ans[i][j] = ans[i][j - 1];
 		}
 	}
-
-public:
-	Max_Heap(std::vector<int> &arr) {
-		heap = arr;
-		int n = arr.size();
-		loop(i, 0, n - 1) {
-			downheapify(i);
-		}
-	}
-
-	bool isempty() {
-		return (heap.size() <= 0);
-	}
-
-	void push(int el) {
-		heap.push_back(el);
-		upheapify(heap.size() - 1);
-	}
-
-	void pop() {
-		std::swap(heap[0], heap[heap.size() - 1]);
-		heap.pop_back();
-		downheapify(0);
-	}
-
-	int top() {
-		if (isempty()) {
-			std::cout << "Empty Heap\n";
-			return INT_MAX;
-		}
-		return heap[0];
-	}
-};
+}
 
 int main(int argc, char const *argv[]) {
 	clock_t begin = clock();
 	file_i_o();
 	// Write your code here....
 
-	int n;
-	std::cin >> n;
-	std::vector<int> arr(n);
-	loop(i, 0, n - 1) {
-		std::cin >> arr[i];
+	gen_ans();
+	int t;
+	std::cin >> t;
+	while (t--) {
+		ll a, b, n;
+		std::cin >> a >> b >> n;
+		std::cout << (ans[n][b] - ans[n][a - 1]) << "\n";
 	}
-	Max_Heap heap(arr);
-
-	// print heap
-	while (not heap.isempty()) {
-		std::cout << heap.top() << ", ";
-		heap.pop();
-	}
-
 
 #ifndef ONLINE_JUDGE
 	clock_t end = clock();
