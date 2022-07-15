@@ -1,4 +1,4 @@
-// https://www.spoj.com/problems/CUBEFR/
+// https://www.spoj.com/problems/BDOI16B/
 #include <bits/stdc++.h>
 #define ll long long int
 #define mod 1000000007
@@ -31,36 +31,19 @@ void file_i_o() {
 #endif
 }
 
-std::map<ll, ll> ans;
-std::bitset<1000005> iscbfree;
-void gen_set() {
-	iscbfree.set();
-	iscbfree[0] = 0;
-	for (int i = 2; i * i * i <= 1000001; i++) {
-		for (ll j = 1; j * (i * i * i) <= 1000001; j++) {
-			iscbfree[i * i * i * j] = 0;
-		}
-	}
-	ll pos = 1;
-	loop(i, 1, 1000001) {
-		if (iscbfree[i]) {ans[i] = pos; ++pos;}
-		else ans[i] = -1;
-	}
-}
-
 int main(int argc, char const *argv[]) {
 	clock_t begin = clock();
 	file_i_o();
 	// Write your code here....
 
-	gen_set();
 	int t;
 	std::cin >> t;
 	loop(i, 1, t) {
-		int n;
-		std::cin >> n;
-		if (ans[n] > -1) std::cout << "Case " << i << ": " << ans[n] << "\n";
-		else std::cout << "Case " << i << ": Not Cube Free" << "\n";
+		ll n, k;
+		std::cin >> n >> k;
+
+		// prime factorisation of n!
+
 	}
 
 #ifndef ONLINE_JUDGE

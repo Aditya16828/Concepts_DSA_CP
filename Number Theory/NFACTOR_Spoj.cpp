@@ -1,4 +1,4 @@
-// https://www.spoj.com/problems/CUBEFR/
+// https://www.spoj.com/problems/NFACTOR/
 #include <bits/stdc++.h>
 #define ll long long int
 #define mod 1000000007
@@ -31,20 +31,27 @@ void file_i_o() {
 #endif
 }
 
-std::map<ll, ll> ans;
-std::bitset<1000005> iscbfree;
-void gen_set() {
-	iscbfree.set();
-	iscbfree[0] = 0;
-	for (int i = 2; i * i * i <= 1000001; i++) {
-		for (ll j = 1; j * (i * i * i) <= 1000001; j++) {
-			iscbfree[i * i * i * j] = 0;
+vll factors((int)(1e6 + 2), 0);
+void gen_factors() {
+	for (int i = 2; i <= (int)(1e6); i++) {
+		if (factors[i] == 0) {
+			for (int j = i; j <= (int)(1e6); j += i) {
+				factors[j]++;
+			}
 		}
 	}
-	ll pos = 1;
-	loop(i, 1, 1000001) {
-		if (iscbfree[i]) {ans[i] = pos; ++pos;}
-		else ans[i] = -1;
+}
+
+
+ll ans[11][(int)(1e6 + 2)];
+void gen_ans() {
+	gen_factors();
+	std::memset(ans, 0, sizeof ans);
+	for (int i = 0; i <= 10; i++) {
+		for (int j = 1; j <= (int)(1e6); j++) {
+			if (factors[j] == i) {ans[i][j] = ans[i][j - 1] + 1;}
+			else ans[i][j] = ans[i][j - 1];
+		}
 	}
 }
 
@@ -53,14 +60,13 @@ int main(int argc, char const *argv[]) {
 	file_i_o();
 	// Write your code here....
 
-	gen_set();
+	gen_ans();
 	int t;
 	std::cin >> t;
-	loop(i, 1, t) {
-		int n;
-		std::cin >> n;
-		if (ans[n] > -1) std::cout << "Case " << i << ": " << ans[n] << "\n";
-		else std::cout << "Case " << i << ": Not Cube Free" << "\n";
+	while (t--) {
+		ll a, b, n;
+		std::cin >> a >> b >> n;
+		std::cout << (ans[n][b] - ans[n][a - 1]) << "\n";
 	}
 
 #ifndef ONLINE_JUDGE
