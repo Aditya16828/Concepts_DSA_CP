@@ -43,6 +43,7 @@ void spf() {
 		if (pi[i] == i) {
 			primes.push_back(i);
 		}
+		// we will go to each prime number in the prime array which are less than pi[i].
 		for (int j = 0; (j < primes.size()) and (primes[j] <= pi[i]) and i * primes[j] < max_size; j++) {
 			pi[i * primes[j]] = primes[j];
 		}

@@ -31,11 +31,27 @@ void file_i_o() {
 #endif
 }
 
+int max_size = (int)(1e5 + 2);
+vll pi(max_size);
+vll primes;
+void gen_primes() {
+	loop(i, 0, max_size - 2) pi[i] = i;
+	pi[1] = -1;
+	for (int i = 2; i <= max_size - 2; i++) {
+		if (pi[i] == i) primes.push_back(i);
+		// we will go to each prime number in the prime array which are less than pi[i].
+		for (int j = 0; (j < primes.size()) and (primes[j] <= pi[i]) and ((i * primes[j]) <= (max_size - 2)); j++) {
+			pi[i * primes[j]] = primes[j];
+		}
+	}
+}
+
 int main(int argc, char const *argv[]) {
 	clock_t begin = clock();
 	file_i_o();
 	// Write your code here....
 
+	gen_primes();
 	int t;
 	std::cin >> t;
 	loop(i, 1, t) {
@@ -43,7 +59,40 @@ int main(int argc, char const *argv[]) {
 		std::cin >> n >> k;
 
 		// prime factorisation of n!
+		ll ans = inf;
+		ll x = k;
+		for (int i = 0; i < primes.size(); i++) {
+			ll p = primes[i];
+			ll cnt1 = 0;
+			while (n / p) {
+				cnt1 += (n / p);
+				p *= primes[i];
+			}
+			if (cnt1 == 0) continue;
 
+			ll cnt2 = 0;
+			while (x % primes[i] == 0) {
+				cnt2++;
+				x = x / primes[i];
+			}
+
+			if (cnt2) ans = std::min(ans, cnt1 / cnt2);
+		}
+
+		// ??
+		if (x > 1) {
+			ll p = x;
+			ll cnt = 0;
+			while (n / p) {
+				cnt += (n / p);
+				p *= x;
+			}
+			ans = std::min(ans, cnt);
+		}
+
+		if (ans == inf) ans = 0;
+
+		std::cout << "Case " << i << ": " << ans << "\n";
 	}
 
 #ifndef ONLINE_JUDGE
