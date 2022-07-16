@@ -1,5 +1,4 @@
-Case 1: 3
-Case 2: 994
+4713
 
 
-Executed In: 12 ms
+Executed In: 32 ms
