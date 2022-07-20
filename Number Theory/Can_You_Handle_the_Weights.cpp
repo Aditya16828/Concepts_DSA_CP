@@ -1,11 +1,10 @@
-// https://www.spoj.com/problems/ADAGCD/
+// https://www.hackerearth.com/problem/algorithm/can-you-handle-the-weights/
 #include <bits/stdc++.h>
 #define ll long long int
 #define mod 1000000007
 #define inf (long long int)1e18
 #define log(args...)    { std::string _s = #args; replace(_s.begin(), _s.end(), ',', ' '); std::stringstream _ss(_s); std::istream_iterator<std::string> _it(_ss); err(_it, args); }
 #define logarr(arr,a,b) for(int z=(a);z<=(b);z++) std::cout<<(arr[z])<<" ";std::cout<<std::endl;
-#define vec std::vector
 #define vll std::vector<long long int>
 #define vi std::vector<int>
 #define vb std::vector<bool>
@@ -32,34 +31,30 @@ void file_i_o() {
 #endif
 }
 
-ll const max_size = 10000007;
-std::vector<ll> pi(max_size, 0);
-vll primes;
-void gen_pi() {
-	loop(i, 0, max_size - 1) {
-		pi[i] = i;
+struct data {
+	ll x, y, gcd;
+};
+
+data gcd_extd(ll a, ll b) {
+	if (b == 0) {
+		data res;
+		res.gcd = a;
+		res.x = a;
+		res.y = 0;
+		return res;
 	}
-	pi[0] = pi[1] = -1;
-	for (ll i = 2; i < max_size; i++) {
-		if (pi[i] == i) {
-			primes.push_back(i);
-			// for (ll j = 2 * i; j < max_size; j += i) {
-			// 	pi[j] = i;
-			// }
-		}
-		for (ll j = 0; (j < primes.size()) and (primes[j]*i <= max_size - 2) and (primes[j] <= pi[i]); j++) {
-			pi[i * primes[j]] = primes[j];
-		}
-	}
+
+	data temp = gcd_extd(b, a % b);
+	data ans;
+	ans.gcd = temp.gcd;
+	ans.x = temp.y;
+	ans.y = (temp.x - ((a / b) * temp.y));
+	return ans;
 }
 
-ll mod_exp(ll base, ll exp) {
-	ll res = 1;
-	while (exp--) {
-		res *= base;
-		res %= mod;
-	}
-	return res % mod;
+ll modInv(ll a, ll m) {
+	data t = gcd_extd(a, m);
+	return (t.x + m) % m;
 }
 
 int main(int argc, char const *argv[]) {
@@ -67,39 +62,35 @@ int main(int argc, char const *argv[]) {
 	file_i_o();
 	// Write your code here....
 
-	gen_pi();
-	ll n;
-	std::cin >> n;
-	vll gcd(max_size, LLONG_MAX), cnt(max_size, 0);
-	ll no = n;
-	while (no--) {
-		ll m;
-		std::cin >> m;
+	// ax + by = d -> Linear Diophantine equation
+	int t;
+	std::cin >> t;
+	while (t--) {
+		ll a, b, d;
+		std::cin >> a >> b >> d;
+		data t = gcd_extd(a, b);
+		if (d % t.gcd) {
+			std::cout << "0\n";
+		} else if (d == 0) {
+			std::cout << "1\n";
+		} else {
+			// reduce into siplified form
+			d /= t.gcd;
+			a /= t.gcd;
+			b /= t.gcd;
 
-		std::unordered_map<ll, ll> factors;
-		while (m--) {
-			ll a;
-			std::cin >> a;
-
-			// factorisation
-			while (a > 1) {
-				factors[pi[a]]++;
-				a /= pi[a];
+			ll y1 = ((d % a) * modInv(b, a)) % a; // first value of y for which the equation is satisfied
+			if (y1 * b > d) std::cout << "0\n";
+			else {
+				std::cout << (((d / b) - y1) / a) + 1 << "\n";
 			}
 		}
+	}
 
-		for (auto &el : factors) {
-			cnt[el.first]++;
-			gcd[el.first] = std::min(gcd[el.first], el.second);
-		}
-	}
-	ll ans = (ll)1;
-	for (ll i = 2; i < max_size; i++) {
-		if (cnt[i] == n) {
-			ans *= (mod_exp(i, gcd[i]) % mod);
-			ans %= mod;
-		}
-	}
-	printf("%lld", ans);
+
+#ifndef ONLINE_JUDGE
+	clock_t end = clock();
+	std::cout << "\n\nExecuted In: " << double(end - begin) / CLOCKS_PER_SEC * 1000 << " ms";
+#endif
 	return 0;
 }
