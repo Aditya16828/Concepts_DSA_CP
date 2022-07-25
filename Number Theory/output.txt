@@ -1,0 +1,8 @@
+phi[n] = 12
+phi[n] = 12
+phi[n] = 18
+phi[n] = 6
+phi[n] = 32
+
+
+Executed In: 40 ms
