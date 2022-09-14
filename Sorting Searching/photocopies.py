@@ -12,7 +12,7 @@ def photocopy(x, y, n):
     if n == 1:
         return min(x, y)
     lo, hi = 0, max(x, y)*(n-1)
-    ans = 0
+    ans = -1
     while lo <= hi:
         mid = lo + (hi-lo)//2
         if isPossible(mid, x, y, n):
@@ -20,4 +20,4 @@ def photocopy(x, y, n):
             ans = hi
         else:
             lo = mid+1
-    return ans
+    return ans + min(x, y)
