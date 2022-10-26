@@ -30,8 +30,16 @@ Node* insert(Node* root, int data) {
 void inorder_print(Node* root) {
 	if (root == NULL) return;
 	inorder_print(root->left);
-	std::cout << root->data << " ";
+	std::cout << root->data << ", ";
 	inorder_print(root->right);
+}
+void preorder(Node *root)
+{
+    if (root == NULL)
+        return;
+    std::cout<<(root->data)<<", ";
+    preorder(root->left);
+    preorder(root->right);
 }
 
 std::queue<Node*> max_depth_nodes(Node* root) {
@@ -72,7 +80,7 @@ int main()
 		root = insert(root, d);
 		std::cin >> d;
 	}
-	inorder_print(root);
+	preorder(root);
 	std::cout << "\n\n";
 	std::queue<Node*> temp = max_depth_nodes(root);
 	while (temp.size()) {
