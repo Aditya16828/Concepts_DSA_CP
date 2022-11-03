@@ -31,62 +31,6 @@ void file_i_o() {
 #endif
 }
 
-void upheapify(std::vector<int> &heap, int cidx){
-	if(cidx == 0)
-		return;
-	int pidx = (cidx-1)/2;
-	if(heap[pidx] < heap[cidx]){
-		std::swap(heap[pidx], heap[cidx]);
-		upheapify(heap, pidx);
-	}
-}
-
-void downheapify(std::vector<int> &heap, int pidx){
-	int lcidx = 2*pidx + 1;
-	int rcidx = 2*pidx + 2;
-
-	int max_idx = pidx;
-	if(heap.size() <= lcidx and heap.size() <= rcidx) return;
-
-	if(lcidx < heap.size() and heap[lcidx] > heap[max_idx]){
-		max_idx = lcidx;
-	} else if (rcidx < heap.size() and heap[rcidx] > heap[max_idx]) {
-		max_idx = rcidx;
-	}
-
-	if(max_idx == pidx) return;
-
-	std::swap(heap[pidx], heap[max_idx]);
-	downheapify(heap, max_idx);
-}
-
-void insert(std::vector<int> &heap, int key){
-	heap.push_back(key);
-	upheapify(heap, heap.size()-1);
-}
-
-int get(std::vector<int> &heap){
-	return heap[0];
-}
-
-void remove(std::vector<int> &heap, int idx){
-	if(idx >= heap.size()) return;
-
-	heap[idx] = INT_MAX;
-	upheapify(heap, idx);
-
-	std::swap(heap[0], heap[heap.size()-1]);
-
-	heap.pop_back();
-	downheapify(heap, 0);
-}
-
-void print(std::vector<int> &heap){
-	for(auto &el:heap)
-		std::cout<<el<<", ";
-	std::cout<<"\n";
-}
-
 int main(int argc, char const *argv[]) {
 	clock_t begin = clock();
 	file_i_o();
@@ -94,18 +38,30 @@ int main(int argc, char const *argv[]) {
 
 	int n;
 	std::cin>>n;
-	std::vector<int> heap;
-	while (n--){
-		int x;
-		std::cin>>x;
-		insert(heap, x);
+	std::vector<int> arr(n);
+	for(int i=0;i<n;i++){
+		std::cin>>arr[i];
 	}
-	
-	print(heap);
+	int k;
+	std::cin>>k;
+	std::priority_queue<int, std::vector<int>, std::greater<int>> pq;
+	int i = 0;
+	std::vector<int> res;
+	while(i < n){
+		if(pq.size() <= k){
+			pq.push(arr[i]);
+			i++;
+		} else {
+			res.push_back(pq.top());
+			pq.pop();
+		}
+	}
+	while(not pq.empty()){
+		res.push_back(pq.top());
+		pq.pop();
+	}
 
-	remove(heap, 3);
-
-	print(heap);
+	logarr(res, 0, res.size()-1);
 
 #ifndef ONLINE_JUDGE
 	clock_t end = clock();
