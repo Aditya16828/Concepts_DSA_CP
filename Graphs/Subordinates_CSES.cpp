@@ -37,10 +37,8 @@ std::vector<ll> dp;
 ll count_subord(int src, int parent = -1) {
 	if (dp[src] != -1) return dp[src];
 	ll ans = 0;
-	bool leaf = true;
 	for (auto &n : graph[src]) {
 		if (n == parent) continue;
-		leaf = false;
 		ans += count_subord(n, src);
 	}
 	return dp[src] = (ans + 1);
@@ -60,10 +58,12 @@ int main(int argc, char const *argv[]) {
 		graph[i].push_back(x);
 		graph[x].push_back(i);
 	}
+
 	dp.resize(n + 1, -1);
 	count_subord(1);
 	for (int i = 1; i <= n; i++) {
-		std::cout << dp[i] - 1 << " "; // -1 as dp[] stores the number of nodes in the particular subtree including the parent
+		std::cout << dp[i] - 1 << " "; 
+		// -1 as dp[] stores the number of nodes in the particular subtree including the parent
 		// but in question we need to print only its number of child
 	}
 

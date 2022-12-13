@@ -31,12 +31,50 @@ void file_i_o() {
 #endif
 }
 
+int Get(int el, std::vector<int> &parent){
+	if(parent[el] == el) return el;
+	return parent[el] = Get(parent[el], parent);
+}
+
+void Union(int el1, int el2, std::vector<int> &rank, std::vector<int> &parent){
+	el1 = Get(el1, parent);
+	el2 = Get(el2, parent);
+
+	if(rank[el1] == rank[el2]){
+		parent[el2] = el1;
+		rank[el1]++;
+	} else if(rank[el1] < rank[el2]){
+		parent[el1] = el2;
+	} else {
+		parent[el2] = el1;
+	}
+}
+
 int main(int argc, char const *argv[]) {
 	clock_t begin = clock();
 	file_i_o();
 	// Write your code here....
 
+	int n;
+	std::cin>>n;
+	vi parent(n), rank(n);
+	loop(i, 0, n-1) parent[i] = i;
+	
+	int q;
+	std::cin>>q;
+	while(q--){
+		std::string str;
+		std::cin>>str;
 
+		int a, b;
+		if(str == "union"){
+			std::cin>>a>>b;
+			Union(a, b, rank, parent);
+		} else if(str == "get"){
+			std::cin>>a;
+			std::cout<<Get(a, parent)<<"\n";
+		}
+	}
 
 #ifndef ONLINE_JUDGE
 	clock_t end = clock();
