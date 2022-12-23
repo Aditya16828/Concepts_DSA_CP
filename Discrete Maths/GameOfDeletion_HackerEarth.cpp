@@ -1,10 +1,11 @@
-// https://cses.fi/problemset/task/1674/
+// https://www.hackerearth.com/practice/basic-programming/bit-manipulation/basics-of-bit-manipulation/practice-problems/algorithm/game-of-destruction-f96cd509/
 #include <bits/stdc++.h>
 #define ll long long int
 #define mod 1000000007
 #define inf (long long int)1e18
 #define log(args...)    { std::string _s = #args; replace(_s.begin(), _s.end(), ',', ' '); std::stringstream _ss(_s); std::istream_iterator<std::string> _it(_ss); err(_it, args); }
 #define logarr(arr,a,b) for(int z=(a);z<=(b);z++) std::cout<<(arr[z])<<" ";std::cout<<std::endl;
+#define vec std::vector
 #define vll std::vector<long long int>
 #define vi std::vector<int>
 #define vb std::vector<bool>
@@ -31,41 +32,40 @@ void file_i_o() {
 #endif
 }
 
-std::vector<std::vector<int>> graph;
-std::vector<ll> dp;
-
-ll count_subord(int src, int parent = -1) {
-	if (dp[src] != -1) return dp[src];
-	ll ans = 0;
-	for (auto &n : graph[src]) {
-		if (n == parent) continue;
-		ans += count_subord(n, src);
-	}
-	return dp[src] = (ans + 1);
-}
-
 int main(int argc, char const *argv[]) {
 	clock_t begin = clock();
 	file_i_o();
 	// Write your code here....
 
 	int n;
-	std::cin >> n;
-	graph.resize(n + 1, std::vector<int>());
-	for (int i = 2; i <= n; i++) {
-		int x;
-		std::cin >> x;
-		graph[i].push_back(x);
-		graph[x].push_back(i);
-	}
+    cin >> n;
+    vector<int> a(n), b(n);
+    long suma = 0, sumb = 0;
+    for (int i = 0; i < n; i++){
+        cin >> a[i];
+        suma += a[i];
+    }
+    for (int i = 0; i < n; i++){
+        cin >> b[i];
+        sumb += b[i];
+    }
 
-	dp.resize(n + 1, -1);
-	count_subord(1);
-	for (int i = 1; i <= n; i++) {
-		std::cout << dp[i] - 1 << " "; 
-		// -1 as dp[] stores the number of nodes in the particular subtree including the parent
-		// but in question we need to print only its number of child
-	}
+    // std::unordered_set<int> as(a.begin(), a.end()), bs(b.begin(), b.end());
+
+    long ora = 0, orb = 0;
+    for(auto &el:a)
+        ora = ora|el;
+    for(auto &el:b)
+        orb = orb|el;
+    
+    long resa = suma - ora;
+    long resb = sumb - orb;
+    if (resa > resb)
+        cout << 1 << " " << resa - resb << endl;
+    else if (resa < resb)
+        cout << 2 << " " << resb - resa << endl;
+    else
+        cout << "1\n";
 
 #ifndef ONLINE_JUDGE
 	clock_t end = clock();
