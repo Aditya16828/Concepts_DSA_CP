@@ -57,7 +57,7 @@ int main(int argc, char const *argv[]) {
 
 	int n;
 	std::cin>>n;
-	vi parent(n), rank(n);
+	vi parent(n), rank(n, 1);
 	loop(i, 0, n-1) parent[i] = i;
 	
 	int q;
