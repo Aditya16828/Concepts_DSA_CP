@@ -42,45 +42,38 @@ std::vector<int> modified_topo_sort(int n) {
     std::vector<int> indegree(n, 0);
 
     loop(i, 0, n - 1) {
-        std::sort(gt[i].begin(), gt[i].end(), cmp);
         for (auto& el : gt[i]) {
             indegree[el]++;
         }
     }
-    // loop(i, 0, n - 1) {
-    //     std::cout << i + 1 << "->";
-    //     for (auto& el : gt[i]) {
-    //         std::cout << el + 1 << ", ";
-    //     }
-    //     std::cout << "\n";
-    // }
-    // logarr(indegree, 0, indegree.size() - 1);
-    // std::cout << "**************\n";
 
-    std::queue<int> q;
-    for (int i = n - 1;i >= 0;i--) {
-        if (indegree[i] == 0) {
-            q.push(i);
-        }
+    std::priority_queue<int> pq;
+
+    loop(i, 0, n - 1) {
+        if (indegree[i] == 0)
+            pq.push(i);
     }
+
+    std::vector<bool> vis(n, 0);
 
     std::vector<int> res;
 
-    while (not q.empty()) {
-        int curr = q.front();
-        q.pop();
+    while (!pq.empty()) {
+        int curr = pq.top();
+        pq.pop();
 
+        if (vis[curr]) continue;
+
+        vis[curr] = true;
         res.push_back(curr);
-
         for (auto& ne : gt[curr]) {
             indegree[ne]--;
             if (indegree[ne] == 0) {
-                q.push(ne);
+                pq.push(ne);
             }
         }
     }
-    // logarr(res, 0, res.size() - 1);
-    // std::cout << "**************\n";
+
     return res;
 }
 
@@ -102,7 +95,6 @@ int main(int argc, char const* argv[]) {
         loop(j, 0, n - 1) {
             if (temp[j] - '0') {
                 gt[j].push_back(i);
-                // g[i].push_back(j);
             }
         }
     }
@@ -117,14 +109,10 @@ int main(int argc, char const* argv[]) {
             }
         }
     }
-    // loop(i, 0, n - 1) {
-    //     logarr(res_g[i], 0, res_g.size() - 1);
-    // }
-    // std::cout << "**************\n";
     std::vector<std::pair<int, int>> ans;
     loop(i, 0, n - 1) {
         loop(j, 0, n - 1) {
-            if (mat[i][j]-'0') continue;
+            if (mat[i][j] - '0') continue;
             if (res_g[i][j]) {
                 ans.push_back({ i, j });
             }
@@ -133,7 +121,7 @@ int main(int argc, char const* argv[]) {
 
     std::cout << ans.size() << "\n";
     for (int i = 0;i < ans.size();i++) {
-        std::cout << ans[i].first+1 << " " << ans[i].second+1 << "\n";
+        std::cout << ans[i].first + 1 << " " << ans[i].second + 1 << "\n";
     }
 
 #ifndef ONLINE_JUDGE
