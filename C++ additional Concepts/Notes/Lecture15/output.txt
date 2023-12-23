@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 Shape constructor
 square constructor
 Shape destructor
 
 
+=======
+Shape constructor
+square constructor
+Shape destructor
+
+
+>>>>>>> 24a80fac1064910ae51f09e81777487a1aaee3b1
 Executed In: 0.35 ms

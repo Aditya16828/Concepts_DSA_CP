@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 1 + i2
 4 + i5
 Hey4 + i5
 
+=======
+1 + i2
+4 + i5
+Hey4 + i5
+
+>>>>>>> 24a80fac1064910ae51f09e81777487a1aaee3b1
 Executed In: 0.247 ms

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 phi[n] = 12
 phi[n] = 12
 phi[n] = 18
@@ -5,4 +6,13 @@ phi[n] = 6
 phi[n] = 32
 
 
+=======
+phi[n] = 12
+phi[n] = 12
+phi[n] = 18
+phi[n] = 6
+phi[n] = 32
+
+
+>>>>>>> 24a80fac1064910ae51f09e81777487a1aaee3b1
 Executed In: 40 ms

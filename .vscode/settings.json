@@ -89,8 +89,12 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
+<<<<<<< HEAD
         "variant": "cpp",
         "format": "cpp",
         "stdfloat": "cpp"
+=======
+        "variant": "cpp"
+>>>>>>> 24a80fac1064910ae51f09e81777487a1aaee3b1
     }
 }
