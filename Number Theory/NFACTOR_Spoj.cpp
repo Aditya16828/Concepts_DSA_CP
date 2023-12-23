@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 // https://www.spoj.com/problems/NFACTOR/
-=======
-// https://www.spoj.com/problems/NFACTOR/
->>>>>>> 24a80fac1064910ae51f09e81777487a1aaee3b1
 #include <bits/stdc++.h>
 #define ll long long int
 #define mod 1000000007
