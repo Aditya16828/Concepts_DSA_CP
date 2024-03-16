@@ -44,15 +44,16 @@ struct Node* remove_node(int d, struct Node* root){
         return root;
     } else if (root->data == d) {
         struct Node* temp = NULL;
-        if(root->left == NULL && root->right == NULL){
+        
+        if(root->left == NULL && root->right == NULL){ // leaf node
             free(root);
             return temp;
-        } else if (root->left == NULL) {
+        } else if (root->left == NULL) { // only right child
             temp = root->right;
             root->right = NULL;
             free(root);
             return temp;
-        } else if (root->right == NULL) {
+        } else if (root->right == NULL) { // only left child
             temp = root->left;
             root->left = NULL;
             free(root);

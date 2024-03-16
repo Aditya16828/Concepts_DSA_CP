@@ -39,9 +39,7 @@ int main(int argc, char const *argv[]) {
 
 #ifndef ONLINE_JUDGE
     clock_t end = clock();
-    std::cout << "
-
-Executed In: " << double(end - begin) / CLOCKS_PER_SEC * 1000 << " ms";
+    std::cout << "Executed In: " << double(end - begin) / CLOCKS_PER_SEC * 1000 << " ms";
 #endif
     return 0;
 }
